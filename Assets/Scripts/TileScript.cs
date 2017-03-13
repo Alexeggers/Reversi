@@ -12,6 +12,10 @@ public class TileScript : MonoBehaviour {
     private GameManager gameManager;
     private GameManager.Player owner = GameManager.Player.NONE;
     private bool isValid = false;
+    private TileScript top;
+    private TileScript right;
+    private TileScript bottom;
+    private TileScript left;
 
     private void Awake()
     {
@@ -46,6 +50,26 @@ public class TileScript : MonoBehaviour {
     public void SetIsValid(bool isValid)
     {
         this.isValid = isValid;
+    }
+
+    public void setTop(TileScript tile)
+    {
+        this.top = tile;
+    }
+
+    public void setRight(TileScript tile)
+    {
+        this.right = tile;
+    }
+
+    public void setBottom(TileScript tile)
+    {
+        this.bottom = tile;
+    }
+
+    public void setLeft(TileScript tile)
+    {
+        this.left = tile;
     }
 
     /// <summary>

@@ -44,7 +44,6 @@ public class GameManager : Singleton<GameManager>
 
     private void resetGame()
     {
-
         gridManager.ResetBoard();
         resetCurrentPlayer();
         gridManager.SetValidTiles();
