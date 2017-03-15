@@ -7,10 +7,10 @@ using UnityEngine.Events;
 /// <summary>
 /// Manages the state of the game
 /// </summary>
-public class GameManager : Singleton<GameManager>
+public class GameManager : Singleton<GameManager>, ClickManager
 {
 
-    // Passed to C# by Unity, never instantiated in code
+    #region unity variables
     public GameObject Tile;
     public Transform Grid;
     public Material WhiteTile;
@@ -21,27 +21,41 @@ public class GameManager : Singleton<GameManager>
     public Text BlackScoreText;
     public Text CurrentPlayerText;
     public GameObject PlayAgainReset;
-
+    #endregion
 
     public enum Player {NONE, PLAYER_WHITE, PLAYER_BLACK};
+
     private GridManager gridManager;
+
+    #region worker variables
     private Player currentPlayer = Player.PLAYER_BLACK;
     private string baseWhiteScoreText = "Current White Score: ";
     private string baseBlackScoreText = "Current Black Score: ";
     private string baseCurrentPlayerText = "Current Player: ";
     private int currentWhiteScore = 2;
     private int currentBlackScore = 2;
+    #endregion
 
-    // Use this for initialization
     void Start()
     {
         this.gridManager = new GridManager(Tile, Grid, WhiteTile, BlackTile, BaseTile, ValidTile);
         gridManager.Initiate();
-
         Button buttonComponent = PlayAgainReset.AddComponent<Button>();
         buttonComponent.onClick.AddListener(resetGame);
     }
 
+    public void OnClick(TileScript caller)
+    {
+        gridManager.TileClicked(caller);
+        endTurn();
+    }
+
+    public Player GetCurrentPlayer()
+    {
+        return this.currentPlayer;
+    }
+
+    #region worker methods
     private void resetGame()
     {
         gridManager.ResetBoard();
@@ -78,21 +92,9 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// Callback for TileScript to notify that a tile was clicked. Returns the new owner of the tile so it can be set in the TileScript
-    /// </summary>
-    /// <param name="x">X Coordinate of tile</param>
-    /// <param name="y">Y Coordinate of tile</param>
-    public void TileClicked(int x, int y)
-    {
-        gridManager.TileClicked(x, y);
-    }
-
-    /// <summary>
-    /// Callback for the TileScript to notify the game manager that a player has completed his turn
-    /// 
     /// Changes the current player, sets valid tiles, keeps score and checks for victory conditions
     /// </summary>
-    public void EndTurn()
+    private void endTurn()
     {
         changePlayer();
         countScores();
@@ -108,7 +110,6 @@ public class GameManager : Singleton<GameManager>
 
     private void endOfGame()
     {
-        // TODO Implement victory
         if (this.currentBlackScore < this.currentWhiteScore)
         {
             this.CurrentPlayerText.text = "White wins!";
@@ -126,9 +127,5 @@ public class GameManager : Singleton<GameManager>
         this.WhiteScoreText.text = baseWhiteScoreText + this.currentWhiteScore;
         this.BlackScoreText.text = baseBlackScoreText + this.currentBlackScore;
     }
-
-    public Player GetCurrentPlayer()
-    {
-        return this.currentPlayer;
-    }
+    #endregion
 }

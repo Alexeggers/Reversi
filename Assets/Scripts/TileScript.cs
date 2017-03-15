@@ -9,78 +9,23 @@ public class TileScript : MonoBehaviour {
 
     public GameObject Tile;
 
-    private GameManager gameManager;
-    private GameManager.Player owner = GameManager.Player.NONE;
-    private bool isValid = false;
-    private TileScript top;
-    private TileScript right;
-    private TileScript bottom;
-    private TileScript left;
+    public TileScript Top;
+    public TileScript Right;
+    public TileScript Bottom;
+    public TileScript Left;
+    public GameManager.Player Owner = GameManager.Player.NONE;
+    public bool isValid = false;
 
-    private void Awake()
+    private ClickManager clickManager;
+
+
+    public void SetClickManager(ClickManager clickManager)
     {
-        gameManager = GameManager.Instance;
+        this.clickManager = clickManager;
     }
 
-    // Use this for initialization
-    void Start () {
-
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
-    public GameManager.Player GetOwner()
+    private void OnMouseUp()
     {
-        return this.owner;
-    }
-
-    public void SetOwner(GameManager.Player newOwner)
-    {
-        this.owner = newOwner;
-    }
-
-    public bool GetIsValid()
-    {
-        return this.isValid;
-    }
-
-    public void SetIsValid(bool isValid)
-    {
-        this.isValid = isValid;
-    }
-
-    public void setTop(TileScript tile)
-    {
-        this.top = tile;
-    }
-
-    public void setRight(TileScript tile)
-    {
-        this.right = tile;
-    }
-
-    public void setBottom(TileScript tile)
-    {
-        this.bottom = tile;
-    }
-
-    public void setLeft(TileScript tile)
-    {
-        this.left = tile;
-    }
-
-    /// <summary>
-    /// On Click handler for tile
-    /// </summary>
-    void OnMouseDown()
-    {
-        if (owner == GameManager.Player.NONE && this.isValid)
-        {
-            gameManager.TileClicked((int)Tile.transform.position.x, (int)Tile.transform.position.y);
-            gameManager.EndTurn();
-        }
+        if (this.isValid) this.clickManager.OnClick(this);
     }
 }
